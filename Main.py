@@ -1,3 +1,4 @@
+import json
 class Contact :
     # instantiating the objects
     def __init__(self,name, phone, email, id) :
@@ -10,6 +11,10 @@ class Contact :
         print (f"Name  : {self.name }")
         print (f"phone : {self.phone }")
         print (f"email : {self.email }")
+        print (f" id   : {self.__id}")
+    
+    def get_id(self):
+        return self.__id
         
 
 # Store contacts in a list of Contact objects in memory.
@@ -46,10 +51,10 @@ while True :
         case 2 :
             print ( " all contacts :")
             for cont in contact_list:
-                print(f"Name : {cont.name}")
+                print(f"Name  : {cont.name}")
                 print(f"phone : {cont.phone}")
                 print(f"email : {cont.email}")
-                
+                print(" id    :",cont.get_id())
             
         
         # TO SEARCH ANY CONTACT 
@@ -117,13 +122,32 @@ while True :
         
         # TO EXIT FROM THE LOOP 
         case 6 :
+            data = {}
+            with open ("contacts.json", 'w+') as f:
+
+                for cont in contact_list:
+                    contact_dict = {
+                        cont.get_id() :[cont.name,cont.phone,cont.email]
+                    }
+                    json_data = json.dumps(contact_dict)
+                    
+                json.dump(json_data,f, indent = 4)
+            # for cont in contact_list:
+            #         contact_dict = {
+            #             cont.get_id() :[cont.name,cont.phone,cont.email]
+            #         }
+            #         json_data = json.dumps(contact_dict)
+                    
+            # print(json_data)
+
             print ("contacts are saved and you are exited successfully")
             break
         
         # TO ENSURE VALID OPERATION IN THE LOOP
         case _:
             print("Enter the valid number to perform specific operation")
-            
+
+
 
             
 
