@@ -1,11 +1,13 @@
 import json
 class Contact :
+    next_id = 1
     # instantiating the objects
     def __init__(self,name, phone, email, id) :
         self.name = name
         self.phone = phone
         self.email = email
-        self.__id =id
+        self.__id = id
+        Contact.next_id += 1
     # to display the contact information
     def display (self) :
         print (f"Name  : {self.name }")
@@ -15,13 +17,30 @@ class Contact :
     
     def get_id(self):
         return self.__id
+    
+    
         
 
 # Store contacts in a list of Contact objects in memory.
 contact_list = []
 
-# menu-driven loop with operations
+# loading contacts from the json file
+try :
+    with open("contacts.json",'r') as f:
+        json_data = json.load(f)
 
+    for key, val in json_data.items() :
+        id = int(key)
+        name = val[0]
+        phone = val[1]
+        email = val[2]
+        contact_obj = Contact(name,phone,email,id)
+        contact_list.append(contact_obj)
+
+except FileNotFoundError :
+    print("file not found")
+
+# menu-driven loop with operations
 while True :
     print ("-- Operations --")
     print ("1. Add new contact")
@@ -34,17 +53,14 @@ while True :
     match value :
         #  TO ADD NEW CONTACT
         case  1 :
-            try:
-                print (" to add new contact : ")
-                name = input("Enter the name : ")
-                number = int(input ( "Enter the number : "))
-                email = input ("Enter the email : ")
-                new_contact = Contact(name,number,email,len(contact_list)+1)
-                contact_list.append(new_contact)
-            except IOError :
-                print ("Enter valid inputs")
-            else:
-                print (f"{name} contact is created ")
+            
+            print (" to add new contact : ")
+            name = input("Enter the name : ")
+            number = input ( "Enter the phone number : ")
+            email = input ("Enter the email : ")
+            new_contact = Contact(name,number,email,Contact.next_id)
+            contact_list.append(new_contact)
+            print (f"{name} contact is created ")
             
         
         # TO VIEW ALL THE CONTACTS
@@ -54,17 +70,17 @@ while True :
                 print(f"Name  : {cont.name}")
                 print(f"phone : {cont.phone}")
                 print(f"email : {cont.email}")
-                print(" id    :",cont.get_id())
+                print(" id    :", cont.get_id())
             
         
-        # TO SEARCH ANY CONTACT 
+        # TO SEARCH ANY CONTACT
         case 3 :
             search_name = input("enter the name of the contact : ")
+            flag = False
             for cont in contact_list:
                 if search_name in cont.name :
                     flag =True
-                else:
-                    flag = False
+                    break
             if flag :
                 cont.display()
             else:
@@ -74,11 +90,11 @@ while True :
         # TO UPDATE THE EXISTING CONTACT
         case 4 :
             search_name = input("enter the name of the contact :")
+            flag = False
             for cont in contact_list:
                 if search_name in cont.name :
-                    flag =True
-                else :
-                    flag =False
+                    flag = True
+                    break
             if flag:
                 print("Choose what you want to update : ")
                 print("1. Update name")
@@ -108,11 +124,11 @@ while True :
         # TO DELETE SPECIFIC CONTACT
         case 5 :
             del_cont_name = input(" Enter the contact name you want to delete : ")
+            flag =False
             for cont in contact_list:
                 if del_cont_name in cont.name :
                     flag = True
-                else:
-                    flag = False
+                    break
             if flag:
                 contact_list.remove(cont)
                 print(f"{cont.name} is deleted successfully")
@@ -120,7 +136,7 @@ while True :
                 print ("user not found")
             
         
-        # TO EXIT FROM THE LOOP 
+        # TO EXIT FROM THE LOOP
         case 6 :
             data = {}
             with open ("contacts.json", 'w+') as f:
@@ -129,9 +145,8 @@ while True :
                     contact_dict = {
                         cont.get_id() :[cont.name,cont.phone,cont.email]
                     }
-                    json_data = json.dumps(contact_dict)
-                    
-                json.dump(json_data,f, indent = 4)
+                    data.update(contact_dict)
+                json.dump(data,f, indent = 4)
             
 
             print ("contacts are saved and you are exited successfully")
@@ -140,6 +155,8 @@ while True :
         # TO ENSURE VALID OPERATION IN THE LOOP
         case _:
             print("Enter the valid number to perform specific operation")
+
+
 
 
 
