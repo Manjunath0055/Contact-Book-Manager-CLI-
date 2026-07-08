@@ -132,13 +132,7 @@ while True :
                     json_data = json.dumps(contact_dict)
                     
                 json.dump(json_data,f, indent = 4)
-            # for cont in contact_list:
-            #         contact_dict = {
-            #             cont.get_id() :[cont.name,cont.phone,cont.email]
-            #         }
-            #         json_data = json.dumps(contact_dict)
-                    
-            # print(json_data)
+            
 
             print ("contacts are saved and you are exited successfully")
             break
